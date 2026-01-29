@@ -95,7 +95,7 @@
                                 <h2 class="td-color">{{ $item->subtotal() }}</h2>
                             </td>
                             <td>
-                                <a href="javascript:void(0)">
+                                <a href="javascript:void(0)" onclick="removeItemFromCart('{{ $item->rowId }}')">
                                     <i class="fas fa-times"></i>
                                 </a>
                             </td>
@@ -108,7 +108,7 @@
                 <div class="row">
                     <div class="col-sm-7 col-5 order-1">
                         <div class="left-side-button text-end d-flex d-block justify-content-end">
-                            <a href="javascript:void(0)"
+                            <a href="javascript:void(0)" onclick="clearCart()"
                                 class="text-decoration-underline theme-color d-block text-capitalize">clear
                                 all items</a>
                         </div>
@@ -182,6 +182,18 @@
     <input type="hidden" id="rowId" name="rowId" />
     <input type="hidden" id="quantity" name="quantity" />
 </form>
+
+<form id="deleteFromCart" action="{{ route('cart.remove') }}" method="post">
+    @csrf
+    @method('delete')
+    <input type="hidden" id="rowId_D" name="rowId" />
+</form>
+
+<form id="clearCart" action="{{ route('cart.clear') }}" method="post">
+    @csrf
+    @method('delete')
+</form>
+
 @endsection
 @push('scripts')
     <script>
@@ -190,6 +202,17 @@
             $('#rowId').val($(qty).data('rowid'));
             $('#quantity').val($(qty).val());
             $('#updateCartQty').submit();
+        }
+        
+        function removeItemFromCart(rowId)
+        {
+            $('#rowId_D').val(rowId);
+            $('#deleteFromCart').submit();
+        }
+
+        function clearCart()
+        {
+            $('#clearCart').submit();
         }
     </script>
 
