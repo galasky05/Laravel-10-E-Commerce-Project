@@ -444,12 +444,13 @@
         </div>
     </div>
 </section>
-<form id="frmFliter" method="GET">
+<form id="frmFilter" method="GET">
     <input type="hidden" name="page" id="page" value="{{ $page }}" />
     <input type="hidden" name="size" id="size" value="{{ $size }}" />
     <input type="hidden" name="order" id="order" value="{{ $order }}" />
     <input type="hidden" name="brands" id="brands" value="{{ $q_brands }}" />
     <input type="hidden" name="categories" id="categories" value="{{ $q_categories }}" />
+    <input type="hidden" name="prange" id="prange" value="" />
 </form>
 @endsection
 
@@ -459,13 +460,26 @@
         // Filter Products Per Page
         $("#pagesize").on("change", function(){
             $("#size").val($(this).val());
-            $("#frmFliter").submit();
+            $("#frmFilter").submit();
         });
 
         // Filter Order By
         $("#orderby").on("change", function(){
             $("#order").val($(this).val());
-            $("#frmFliter").submit();
+            $("#frmFilter").submit();
+        });
+
+        var $range = $(".js-range-slider");
+        instance = $range.data("ionRangeSlider");
+        instance.update({
+            from:{{ $from }},
+            to: {{ $to }}
+        });
+
+        $("#prange").on("change", function(){
+            setTimeout(()=>{
+                $("#frmFilter").submit();
+            },1000);
         });
     });
 
@@ -480,7 +494,7 @@
         }
     });
     $("#brands").val(brands);
-    $("#frmFliter").submit();
+    $("#frmFilter").submit();
 }
 
 function filterProductByCategory(category) {
@@ -493,7 +507,7 @@ function filterProductByCategory(category) {
         }
     });
     $("#categories").val(categories);
-    $("#frmFliter").submit();
+    $("#frmFilter").submit();
 }
 
 </script>
