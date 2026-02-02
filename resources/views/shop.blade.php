@@ -203,60 +203,20 @@
                                 aria-labelledby="headingOne">
                                 <div class="accordion-body category-scroll">
                                     <ul class="category-list">
+                                        @foreach ($categories as $category)
+                                            <li>
+                                                <div class="form-check ps-0 custome-form-check">
+                                                    <input class="checkbox_animated check-it" id="ct{{ $category->id }}" name="categories" type="checkbox" @if($q_categories && in_array($category->id, explode(',', $q_categories))) checked="checked" @endif value="{{ $category->id }}" onchange="filterProductByCategory(this)">
+                                                    <label class="form-check-label">{{ $category->name }}</label>
+                                                    <p class="font-light">({{ $category->products->count() }})</p>
+                                                </div>
+                                            </li>
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct1" name="categories"
-                                                    type="checkbox" value="1">
-                                                <label class="form-check-label">Qui Ut</label>
-                                                <p class="font-light">(7)</p>
-                                            </div>
-                                        </li>
+                                        @endforeach
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct2" name="categories"
-                                                    type="checkbox" value="2">
-                                                <label class="form-check-label">Blanditiis Error</label>
-                                                <p class="font-light">(8)</p>
-                                            </div>
-                                        </li>
+                                        
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct3" name="categories"
-                                                    type="checkbox" value="3">
-                                                <label class="form-check-label">Quam Quos</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct4" name="categories"
-                                                    type="checkbox" value="4">
-                                                <label class="form-check-label">Cupiditate Minus</label>
-                                                <p class="font-light">(5)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct5" name="categories"
-                                                    type="checkbox" value="5">
-                                                <label class="form-check-label">Dolores Et</label>
-                                                <p class="font-light">(4)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct6" name="categories"
-                                                    type="checkbox" value="6">
-                                                <label class="form-check-label">Quis Repudiandae</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
+                                        
                                     </ul>
                                 </div>
                             </div>
@@ -489,6 +449,7 @@
     <input type="hidden" name="size" id="size" value="{{ $size }}" />
     <input type="hidden" name="order" id="order" value="{{ $order }}" />
     <input type="hidden" name="brands" id="brands" value="{{ $q_brands }}" />
+    <input type="hidden" name="categories" id="categories" value="{{ $q_categories }}" />
 </form>
 @endsection
 
@@ -509,13 +470,31 @@
     });
 
     // Filter by Brand
-    function filterProductByBrand(brand){
-        var brands = [];
-        $("input[name='brands']:checked").each(function(){
-            brands.push($(this).val());
-        });
-        $("#brands").val(brands.join(","));
-        $("#frmFliter").submit();
-    }
+    function filterProductByBrand(brand) {
+    var brands = "";
+    $("input[name='brands']:checked").each(function () {
+        if (brands == "") {
+            brands += this.value;
+        } else {
+            brands += "," + this.value;
+        }
+    });
+    $("#brands").val(brands);
+    $("#frmFliter").submit();
+}
+
+function filterProductByCategory(category) {
+    var categories = "";
+    $("input[name='categories']:checked").each(function () {
+        if (categories == "") {
+            categories += this.value;
+        } else {
+            categories += "," + this.value;
+        }
+    });
+    $("#categories").val(categories);
+    $("#frmFliter").submit();
+}
+
 </script>
 @endpush
