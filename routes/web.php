@@ -33,6 +33,7 @@ Route::get('/wishlist', [WishListController::class, 'getWishlistedProducts'])->n
 Route::post('/wishlist/store', [WishListController::class, 'addProductToWishlist'])->name('wishlist.store');
 Route::post('/wishlist/remove', [WishListController::class, 'removeProductFromWishlist'])->name('wishlist.remove');
 Route::post('/wishlist/clear', [WishListController::class, 'clearWishlist'])->name('wishlist.clear');
+Route::post('/wishlist/move-to-cart', [WishListController::class, 'moveToCart'])->name('wishlist.move.to.cart');
 
 Auth::routes();
 
