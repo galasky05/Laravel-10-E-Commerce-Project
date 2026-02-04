@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Brand;
 use App\Models\Category;
+use Cart;
 
 class ShopController extends Controller
 {
@@ -91,5 +92,12 @@ class ShopController extends Controller
             'product'   => $product,
             'rproducts' => $rproducts
         ]);
+    }
+
+    public function getCartAndWishlistCount()
+    {
+        $cartCount = Cart::instance("cart")->count();
+        $wishlistCount = Cart::instance("wishlist")->count();
+        return response()->json(['status'=>200,'cartCount'=>$cartCount,'wishlistCount'=>$wishlistCount]);
     }
 }

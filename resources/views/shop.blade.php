@@ -366,7 +366,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="javascript:void(0)" class="wishlist">
+                                            <a href="javascript:void(0)" onclick="addProductToWishlist({{ $product->id }},'{{ $product->name }}',{{ $product->regular_price }})" class="wishlist">
                                                 <i data-feather="heart"></i>
                                             </a>
                                         </li>
@@ -456,6 +456,67 @@
 
 @push('scripts')
 <script>
+    // Define global functions first (PENTING!)
+    window.filterProductByBrand = function(brand) {
+        var brands = "";
+        $("input[name='brands']:checked").each(function () {
+            if (brands == "") {
+                brands += this.value;
+            } else {
+                brands += "," + this.value;
+            }
+        });
+        $("#brands").val(brands);
+        $("#frmFilter").submit();
+    };
+
+    window.filterProductByCategory = function(category) {
+        var categories = "";
+        $("input[name='categories']:checked").each(function () {
+            if (categories == "") {
+                categories += this.value;
+            } else {
+                categories += "," + this.value;
+            }
+        });
+        $("#categories").val(categories);
+        $("#frmFilter").submit();
+    };
+
+    window.addProductToWishlist = function(id, name, price) {
+        console.log('Wishlist clicked:', id, name, price); // Debug
+        
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('wishlist.store') }}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                id: id,
+                name: name,
+                quantity: 1,
+                price: price
+            },
+            success: function(data) {
+                console.log('Response:', data); // Debug
+                if(data.status == 200) {
+                    $("#wishlist-count").text(data.count);
+                    getCartWishlistCount();
+                    $.notify({
+                        icon: "fa fa-check",
+                        title: "Success!",
+                        message: "Item successfully added to your wishlist!"
+                    }, {
+                        type: 'success'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText); // Debug
+                alert('Error adding to wishlist: ' + error);
+            }
+        });
+    };
+
     $(document).ready(function(){
         // Filter Products Per Page
         $("#pagesize").on("change", function(){
@@ -470,45 +531,34 @@
         });
 
         var $range = $(".js-range-slider");
-        instance = $range.data("ionRangeSlider");
-        instance.update({
-            from:{{ $from }},
-            to: {{ $to }}
-        });
+        var instance = $range.data("ionRangeSlider");
+        if(instance) {
+            instance.update({
+                from: {{ $from }},
+                to: {{ $to }}
+            });
+        }
 
         $("#prange").on("change", function(){
             setTimeout(()=>{
                 $("#frmFilter").submit();
-            },1000);
+            }, 1000);
         });
     });
 
-    // Filter by Brand
-    function filterProductByBrand(brand) {
-    var brands = "";
-    $("input[name='brands']:checked").each(function () {
-        if (brands == "") {
-            brands += this.value;
-        } else {
-            brands += "," + this.value;
-        }
-    });
-    $("#brands").val(brands);
-    $("#frmFilter").submit();
-}
-
-function filterProductByCategory(category) {
-    var categories = "";
-    $("input[name='categories']:checked").each(function () {
-        if (categories == "") {
-            categories += this.value;
-        } else {
-            categories += "," + this.value;
-        }
-    });
-    $("#categories").val(categories);
-    $("#frmFilter").submit();
-}
-
+    function getCartWishlistCount()
+    {
+        $.ajax({
+            type:"GET",
+            url:"{{ route('shop.cart.wishlist.count') }}",
+            success:function(data){
+                if(data.status==200)
+                {
+                    $("#cart-count").html(data.cartCount);
+                    $("#wishlist-count").html(data.wishlistCount);
+                }
+            }
+        })
+    }
 </script>
 @endpush
