@@ -42,5 +42,18 @@ class WishListController extends Controller
             'count' => $wishlist->content()->count()
         ]);
     }
+
+    public function removeProductFromWishlist(Request $request)
+    {
+        $rowId = $request->rowId;
+        Cart::instance("wishlist")->remove($rowId);
+        return redirect()->route('wishlist.list');
+    }
+
+    public function clearWishlist()
+    {
+        Cart::instance("wishlist")->destroy();
+        return redirect()->route('wishlist.list');
+    }
     
 }

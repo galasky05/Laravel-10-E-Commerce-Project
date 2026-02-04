@@ -97,7 +97,7 @@
                                 <a href="javascript:void(0)" class="icon">
                                     <i class="fas fa-shopping-cart"></i>
                                 </a>
-                                <a href="javascript:void(0)" class="icon">
+                                <a href="javascript:void(0)" class="icon" onclick="removeFromWishlist('{{ $item->rowId }}')">
                                     <i class="fas fa-times"></i>
                                 </a>
                             </td>
@@ -107,14 +107,47 @@
                 </table>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12 text-end">
+                <a href="javascript:void(n)" onclick="clearWishlist()">Clear All Items</a>
+            </div>
+        </div>
         @else
             <div class="row">
+                <div class="col-md-12 text-center">
                 <h2>Your wishlist is empty !</h2>
                 <h5 class="mt-3">Add items to it now.</h5>
                 <a href="{{ route('shop.index') }}" class="btn btn-warning mt-5">Shop Now</a>
             </div>
+        </div>
         @endif
     </div>
 </section>
 <!-- Cart Section End --> 
+
+<form id="deleteFromWishlist" action="{{ route('wishlist.remove') }}" method="POST">
+    @csrf
+    <input type="hidden" name="rowId" id="rowId">
+</form>
+
+<form id="clearWishlist" action="{{ route('wishlist.clear') }}" method="POST">
+    @csrf
+    
+</form>
+
 @endsection
+
+@push('scripts')
+    <script>
+        function removeFromWishlist(rowId)
+        {
+            document.getElementById('rowId').value = rowId;
+            document.getElementById('deleteFromWishlist').submit();
+        }
+
+        function clearWishlist()
+        {
+            document.getElementById('clearWishlist').submit();
+        }
+    </script>
+@endpush
