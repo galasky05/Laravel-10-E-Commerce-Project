@@ -7,6 +7,12 @@ use Cart;
 
 class WishListController extends Controller
 {
+    public function getWishlistedProducts()
+    {
+        $items = Cart::instance("wishlist")->content();
+        return view('wishlist',['items'=>$items]);
+    }
+    
     public function addProductToWishlist(Request $request)
     {
         $wishlist = Cart::instance('wishlist');
